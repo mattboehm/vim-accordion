@@ -1,0 +1,31 @@
+*accordion.txt* Minimize all but a few vsplits 
+
+Author: Matthew Boehm <http://github.com/mattboehm>
+
+==============================================================================
+INTRODUCTION                                                         *accordion*
+
+Got too many vsplits? Accordion will squish all of them except the one
+currently focused and a configurable number of its neighbors on each side.
+
+To use Accordion, call AccordionStart with the total number of vsplits you want to
+see passed in as an argument. AccordionStart(3) would squish all vsplits except the
+currently active one and one on each side (left/right). To disable the plugin,
+call AccordionStop().
+
+==============================================================================
+LIMITATIONS                                              *accordion-limitations*
+
+1. AccordionStart applies for all tabs but AccordionStop only resets the current tab
+2. Even numbers work like the next highest odd number
+3. Perhaps some people would prefer if you moved the sliding window of visible
+  panes by "pushing" against its borders rather than by always centering the
+  sliding window on the focused window
+
+==============================================================================
+OPTIONS                                                      *accordion-options*
+
+No options yet...
+
+
+ vim:tw=78:et:ft=help:norl:
