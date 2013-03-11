@@ -53,7 +53,9 @@ endfunction
 function! s:ShrinkColumnsInDirection(padding, direction)
 	let curwin = winnr()
 	"go over `padding` times in the direction
-	exe printf("%0.0f", a:padding) . "wincmd " . a:direction
+	if a:padding >= 1
+		exe printf("%0.0f", a:padding) . "wincmd " . a:direction
+	endif
 	"go one more window over, and detect if the window number changed or
 	"not
 	let prevWin = winnr()
