@@ -4,7 +4,7 @@ accordion.vim
 Got too many vsplits? Accordion will squish all of them except the one
 currently focused and a configurable number of its neighbors on each side.
 
-Version 0.0.1
+Version 0.0.2
 
 No backwards compatability is guaranteed at this time.
 
@@ -12,10 +12,18 @@ No backwards compatability is guaranteed at this time.
 Usage
 -----
 
-To use Accordion, call AccordionStart with the total number of vsplits you want to
-see passed in as an argument. AccordionStart(3) would squish all vsplits except the
-currently active one and one on each side (left/right). To disable the plugin,
-call AccordionStop().
+Accordion can either be used to adjust the layout once or to continually
+enforce the layout for the current tab or all tabs.
+
+To adjust the layout one time, type `:call Accordion(3)` where 3 is the number
+of vsplits you want to be limited to seeing. To restore your layout to normal,
+type `:call AccordionClear()`.
+
+If you want accordion to continually enforce a layout, try `:call
+AccordionStart(3)` or `:call AccordionStartTab(3)` (only applies to one tab).
+Every time you split or switch windows, accordion will re-layout to enforce
+that you never have too many vsplits crowding your screen. To turn this off,
+`:call AccordionStop()`.
 
 
 Screenshot

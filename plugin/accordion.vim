@@ -3,21 +3,42 @@
 
 let s:accordion_running=0
 
-function! AccordionStop()
-	augroup multi
+if !exists("g:accordion_listening")
+	let g:accordion_listening = 1
+endif
+
+if g:accordion_listening
+	augroup accordion
+		autocmd!
+		autocmd WinEnter * call Accordion()
+	augroup end
+else
+	augroup accordion
 		autocmd!
 	augroup end
+endif
+
+function! AccordionStop()
 	"unlock window widths
-	"TODO only unlocks for this tab, but mapping applies to all tabs
-	call s:UnshrinkAllWindows()
+	"TODO only unshrinks this tab, so if a global option was set, other
+	"tabs might be accordioned still.
+	if exists("t:accordion_size")
+		unlet t:accordion_size
+	elseif exists("g:accordion_size")
+		unlet g:accordion_size
+	endif
+	call AccordionClear()
 endfunction
 
+
 function! AccordionStart(size)
-	augroup multi
-		autocmd!
-		exe "autocmd WinEnter * call <SID>Accordion(".a:size.")"
-	augroup end
-	exe "call <SID>Accordion(".a:size.")"
+	let g:accordion_size = a:size
+	call Accordion()
+endfunction
+
+function! AccordionStartTab(size)
+	let t:accordion_size = a:size
+	call Accordion()
 endfunction
 
 function! s:ShrinkWindow()
@@ -30,20 +51,31 @@ function! s:UnshrinkWindow()
 	setl nowinfixwidth
 endfunction
 
-function! s:UnshrinkAllWindows()
+function! AccordionClear()
 	let curwin = winnr()
 	windo call s:UnshrinkWindow()
 	exe curwin . " wincmd w"
 	wincmd =
 endfunction
 
-function! s:Accordion(size)
+"can be called with no arguments or with the first argument as the size
+function! Accordion(...)
+	let size = 0
+	if a:0 == 0
+		if exists("t:accordion_size")
+			let size = t:accordion_size
+		elseif exists("g:accordion_size")
+			let size = g:accordion_size
+		endif
+	else
+		let size = a:1
+	endif
 	"accordion can be triggered on the change of window focus
 	"this is a hack so accordion doesn't recursively trigger itself
-	if !s:accordion_running
+	if !s:accordion_running && size > 0
 		let s:accordion_running=1
-		let leftPadding = ceil((a:size - 1)/2.0)
-		let rightPadding = floor((a:size - 1)/2.0)
+		let leftPadding = ceil((size - 1)/2.0)
+		let rightPadding = floor((size - 1)/2.0)
 		call s:SetVisibleColumns(leftPadding, rightPadding)
 		let s:accordion_running=0
 	endif
@@ -69,7 +101,7 @@ function! s:ShrinkColumnsInDirection(padding, direction)
 endfunction
 
 function! s:SetVisibleColumns(leftPadding, rightPadding)
-	call s:UnshrinkAllWindows()
+	call AccordionClear()
 	call s:ShrinkColumnsInDirection(a:leftPadding, "h")
 	call s:ShrinkColumnsInDirection(a:rightPadding, "l")
 	wincmd =
