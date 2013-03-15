@@ -52,10 +52,12 @@ function! s:UnshrinkWindow()
 endfunction
 
 function! AccordionClear()
+  let s:accordion_running=1
   let curwin = winnr()
   windo call s:UnshrinkWindow()
   exe curwin . " wincmd w"
   wincmd =
+  let s:accordion_running=0
 endfunction
 
 "can be called with no arguments or with the first argument as the size
