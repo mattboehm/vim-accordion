@@ -29,6 +29,11 @@ Screenshot
 ----------
 <img src="http://i.imgur.com/H62uwZ3.png" width="800"/>
 
+Related Plugins
+---------------
+I was inspired to write this after using [MultiWin](http://www.vim.org/scripts/script.php?script_id=1083) and wanting a similar approach that allows for more than one window to be visible at a time.
+
+If you want to quickly maximize a single window, take a look at [ZoomWin](http://www.vim.org/scripts/script.php?script_id=508) or try using `:tab sp`.
 
 License
 -------
