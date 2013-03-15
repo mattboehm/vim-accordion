@@ -106,3 +106,10 @@ function! s:SetVisibleColumns(leftPadding, rightPadding)
   call s:ShrinkColumnsInDirection(a:rightPadding, "l")
   wincmd =
 endfunction
+
+command! -nargs=* Accordion call Accordion(<f-args>)
+command! AccordionClear call AccordionClear()
+command! -nargs=1 AccordionStart call AccordionStart(<f-args>)
+command! -nargs=1 AccordionStartTab call AccordionStartTab(<f-args>)
+command! AccordionStop call AccordionStop()
+
