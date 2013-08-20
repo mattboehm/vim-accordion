@@ -1,4 +1,4 @@
-*accordion.txt* Minimize all but a few vsplits 
+*accordion.vim* Minimize all but a few vsplits 
 
 Author: Matthew Boehm <http://github.com/mattboehm>
 
@@ -53,5 +53,8 @@ LIMITATIONS                                              *accordion-limitations*
 
 1. |AccordionStop| only calls |AccordionClear| on the current tab even if
     there are other tabs that were locked
+2. Accordions are not recalculated when moving up/down. Using horizontal 
+    splits in general may cause slightly unexpected behaviors. Please open an 
+    issue on github if you run into any of these.
 
  vim:tw=78:et:ft=help:norl:
