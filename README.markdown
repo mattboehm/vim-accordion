@@ -4,7 +4,7 @@ accordion.vim
 Got too many vsplits? Accordion will squish all of them except the one
 currently focused and a configurable number of its neighbors on each side.
 
-Version 0.1.0
+Version 0.1.1
 
 No backwards compatability is guaranteed at this time.
 

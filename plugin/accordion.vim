@@ -86,6 +86,18 @@ function! AccordionClear()
   let s:accordion_running=prev_running
 endfunction
 
+function! AccordionChangeSize(change)
+	if exists("t:accordion_size")
+		let t:accordion_size += a:change
+		call Accordion()
+	elseif exists("g:accordion_size")
+		let g:accordion_size += a:change
+		call Accordion()
+	else
+		echom "Accordion can't change size; none set."
+	endif
+endfunction
+
 "can be called with no arguments or with the first argument as the size
 function! Accordion(...)
   let curwin = winnr()
@@ -196,4 +208,6 @@ command! AccordionClear call AccordionClear()
 command! -nargs=1 AccordionStart call AccordionStart(<f-args>)
 command! -nargs=1 AccordionStartTab call AccordionStartTab(<f-args>)
 command! AccordionStop call AccordionStop()
+command! AccordionZoomIn call AccordionChangeSize(-1)
+command! AccordionZoomOut call AccordionChangeSize(1)
 
