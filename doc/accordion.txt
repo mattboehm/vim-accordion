@@ -35,6 +35,10 @@ COMMANDS                                                    *accordion-commands*
 :AccordionStartTab <size>                                   *:AccordionStartTab*
     Same as AccordionStart but only applies to current tab
 
+:AccordionDiff                                                  *:AccordionDiff*
+    Run accordion in diff mode.
+    Always tries to show two windows and diffs the visible windows.
+
 :AccordionStop                                                  *:AccordionStop*
     Turn off auto-layout.
     Tries to turn off tab-specific rule. If there is none, tries to turn off

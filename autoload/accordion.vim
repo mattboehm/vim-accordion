@@ -48,6 +48,12 @@ function! accordion#StartTab(size)
   call accordion#Accordion()
 endfunction
 "}}}
+"accordion#Diff() run accordion in diff mode (size 2, visible windows diffed) {{{
+function accordion#Diff()
+  let t:accordion_diff = 1
+  call accordion#StartTab(2)
+endfunction
+"}}}
 "accordion#Stop() Turn off accordion and reset layout {{{
 function! accordion#Stop()
   "unlock window widths
@@ -58,6 +64,8 @@ function! accordion#Stop()
   elseif exists("g:accordion_size")
     unlet g:accordion_size
   endif
+  if exists("t:accordion_diff")
+    unlet t:accordion_diff
   call accordion#Clear()
 endfunction
 "}}}
@@ -66,7 +74,7 @@ function! accordion#Clear()
   let prev_running = s:accordion_running
   let s:accordion_running=1
   let curwin = winnr()
-  windo call s:UnshrinkWindow()
+  windo call s:UnshrinkWindow() | if exists("t:accordion_diff") | diffoff | endif
   exe curwin . " wincmd w"
   wincmd =
   let s:accordion_running=prev_running
@@ -96,11 +104,17 @@ function! s:ShrinkWindow()
   setl winminwidth=0
   0 wincmd | 
   setl winfixwidth
+  if exists("t:accordion_diff")
+    diffoff
+  endif
 endfunction
 "}}}
 "s:UnshrinkWindow() reset a window to normal {{{
 function! s:UnshrinkWindow()
   setl nowinfixwidth
+  if exists("t:accordion_diff")
+    diffthis
+  endif
 endfunction
 "}}}
 "s:GetMovementDirection() Get direction just moved when switching windows {{{
@@ -198,13 +212,15 @@ function! s:SetViewportInDirection(direction, padding)
   let curwin = winnr()
   "echom "sv1 ".string(curwin)
   "go over `padding` times in the direction
-  if a:padding >= 1
-    exe printf("%0.0f", a:padding) . "wincmd " . a:direction
-  endif
+  let padding = a:padding
+  while padding >= 0
+    call s:UnshrinkWindow()
+    let prevWin = winnr()
+    exe "wincmd " . a:direction
+    let padding -= 1
+  endwhile
   "go one more window over, and detect if the window number changed or
   "not
-  let prevWin = winnr()
-  exe "wincmd "a:direction
   while winnr() != prevWin
     call s:ShrinkWindow()
     let prevWin = winnr()
