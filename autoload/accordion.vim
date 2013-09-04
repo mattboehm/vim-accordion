@@ -66,6 +66,7 @@ function! accordion#Stop()
   endif
   if exists("t:accordion_diff")
     unlet t:accordion_diff
+  endif
   call accordion#Clear()
 endfunction
 "}}}
