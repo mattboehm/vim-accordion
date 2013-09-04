@@ -25,8 +25,8 @@ function! accordion#Accordion(...)
     let s:accordion_running=1
     let direction = s:GetMovementDirection()
     "echom "direction " . direction
-    if direction == "h" || direction == "l"
-      let desired_viewport = s:GetDesiredViewport(size, direction)
+    let desired_viewport = s:GetDesiredViewport(size, direction)
+    if len(desired_viewport)
       call s:SetViewport(desired_viewport)
     endif
     "jump to prevwin and back so that window history is preserved
@@ -64,9 +64,8 @@ function! accordion#Stop()
   elseif exists("g:accordion_size")
     unlet g:accordion_size
   endif
-  if exists("t:accordion_diff")
-    unlet t:accordion_diff
-  endif
+  unlet! t:accordion_diff
+  unlet! t:accordion_last_desired_viewport
   call accordion#Clear()
 endfunction
 "}}}
@@ -166,8 +165,21 @@ endfunction
 "direction: which direction the user just moved
 function! s:GetDesiredViewport(size, direction)
   let desired_viewport = {}
-  let desired_viewport[a:direction] = 0
-  let desired_viewport[s:opposites[a:direction]] = a:size - 1
+  if !exists("t:accordion_last_desired_viewport")
+    let desired_viewport["h"] = 0
+    let desired_viewport["l"] = a:size - 1
+  elseif a:direction == "u" || a:direction == "d" || a:direction == "x"
+    let desired_viewport = t:accordion_last_desired_viewport
+  elseif a:direction == "h" || a:direction == "l"
+    let desired_viewport = t:accordion_last_desired_viewport
+    if desired_viewport[a:direction] > 0
+      let desired_viewport[a:direction] -= 1
+      let desired_viewport[s:opposites[a:direction]] += 1
+    endif
+  endif
+  if len(desired_viewport)
+    let t:accordion_last_desired_viewport = desired_viewport
+  endif
   return desired_viewport
 endfunction
 "}}}
