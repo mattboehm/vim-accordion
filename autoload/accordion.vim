@@ -49,7 +49,7 @@ function! accordion#StartTab(size)
 endfunction
 "}}}
 "accordion#Diff() run accordion in diff mode (size 2, visible windows diffed) {{{
-function accordion#Diff()
+function! accordion#Diff()
   let t:accordion_diff = 1
   call accordion#StartTab(2)
 endfunction
@@ -83,15 +83,15 @@ endfunction
 "}}}
 "accordion#ChangeSize(change) change number of splits (tab if set else global {{{
 function! accordion#ChangeSize(change)
-	if exists("t:accordion_size")
-		let t:accordion_size += a:change
-		call accordion#Accordion()
-	elseif exists("g:accordion_size")
-		let g:accordion_size += a:change
-		call accordion#Accordion()
-	else
-		echom "Accordion can't change size; none set."
-	endif
+  if exists("t:accordion_size")
+    let t:accordion_size += a:change
+    call accordion#Accordion()
+  elseif exists("g:accordion_size")
+    let g:accordion_size += a:change
+    call accordion#Accordion()
+  else
+    echom "Accordion can't change size; none set."
+  endif
 endfunction
 "}}}
 "Private Functions:
