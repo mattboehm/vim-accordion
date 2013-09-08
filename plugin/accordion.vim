@@ -1,3 +1,9 @@
+"Header Guard:{{{
+if exists('g:loaded_accordion')
+  finish
+endif
+let g:loaded_accordion = 1
+"}}}
 "Setup Listener:{{{
 if !exists("g:accordion_listening")
   let g:accordion_listening = 1
@@ -23,4 +29,4 @@ command! AccordionStop call accordion#Stop()
 command! AccordionZoomIn call accordion#ChangeSize(-1)
 command! AccordionZoomOut call accordion#ChangeSize(1)
 "}}}
-" vim:set foldmethod=marker foldmarker={{{,}}}
+" vim: foldmethod=marker foldmarker={{{,}}}
