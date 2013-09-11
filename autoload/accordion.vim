@@ -242,4 +242,4 @@ function! s:SetViewportInDirection(direction, padding)
   exe curwin . " wincmd w"
 endfunction
 "}}}
-" vim: foldmethod=marker foldmarker={{{,}}}
+" vim: et sw=2 sts=2 foldmethod=marker foldmarker={{{,}}}
