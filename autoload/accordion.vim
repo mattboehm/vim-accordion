@@ -30,8 +30,8 @@ function! accordion#Accordion(...)
       call s:SetViewport(desired_viewport)
     endif
     "jump to prevwin and back so that window history is preserved
-    exe prevwin . " wincmd w"
-    exe curwin . " wincmd w"
+    execute prevwin "wincmd w"
+    execute curwin "wincmd w"
     let s:accordion_running=0
   endif
 endfunction
@@ -75,7 +75,7 @@ function! accordion#Clear()
   let s:accordion_running=1
   let curwin = winnr()
   windo call s:UnshrinkWindow() | if exists("t:accordion_diff") | diffoff | endif
-  exe curwin . " wincmd w"
+  execute curwin "wincmd w"
   wincmd =
   let s:accordion_running=prev_running
 endfunction
@@ -129,18 +129,18 @@ function! s:GetMovementDirection()
     return "x"
   endif
   "go to previous window
-  exe prevwin . " wincmd w"
+  execute prevwin "wincmd w"
   let result = "?"
   "try moving in all 4 directions and see if you end up in the new window
   for direction in ["h", "j", "k", "l"]
-    exe "wincmd " . direction
+    execute "wincmd" direction
     if winnr() == newwin
       let result = direction
       break
     endif
-    exe prevwin . " wincmd w"
+    execute prevwin "wincmd w"
   endfor
-  exe newwin . " wincmd w"
+  execute newwin "wincmd w"
   return result
 endfunction
 "}}}
@@ -150,13 +150,13 @@ function! s:GetSpace(direction)
     let space = 0
     while space < 999
       let prevwin = winnr()
-      exe "wincmd " . a:direction
+      execute "wincmd" a:direction
       if winnr() == prevwin
         break
       endif
       let space += 1
     endwhile
-    exe curwin . " wincmd w"
+    execute curwin "wincmd w"
     return space
 endfunction
 "}}}
@@ -229,7 +229,7 @@ function! s:SetViewportInDirection(direction, padding)
   while padding >= 0
     call s:UnshrinkWindow()
     let prevWin = winnr()
-    exe "wincmd " . a:direction
+    execute "wincmd" a:direction
     let padding -= 1
   endwhile
   "go one more window over, and detect if the window number changed or
@@ -237,9 +237,9 @@ function! s:SetViewportInDirection(direction, padding)
   while winnr() != prevWin
     call s:ShrinkWindow()
     let prevWin = winnr()
-    exe "wincmd "a:direction
+    execute "wincmd" a:direction
   endwhile
-  exe curwin . " wincmd w"
+  execute curwin "wincmd w"
 endfunction
 "}}}
 " vim: et sw=2 sts=2 foldmethod=marker foldmarker={{{,}}}
