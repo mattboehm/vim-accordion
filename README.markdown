@@ -30,11 +30,11 @@ Screenshots
 
 Reguar usage:
 
-[<img src="http://i.imgur.com/POkMUNv.gif" width="800"/>](http://i.imgur.com/POkMUNv.gif)
+[<img src="http://i.imgur.com/POkMUNv.gif" width="395"/>](http://i.imgur.com/POkMUNv.gif)
 
 Diff mode:
 
-[<img src="http://i.imgur.com/6N9haPt.gif" width="800"/>](http://i.imgur.com/6N9haPt.gif)
+[<img src="http://i.imgur.com/6N9haPt.gif" width="395"/>](http://i.imgur.com/6N9haPt.gif)
 
 Related Plugins
 ---------------
