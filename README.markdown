@@ -25,9 +25,16 @@ switch windows, accordion will re-layout to enforce that you never have too
 many vsplits crowding your screen. To turn this off, run `:AccordionStop`.
 
 
-Screenshot
+Screenshots
 ----------
-<img src="http://i.imgur.com/H62uwZ3.png" width="800"/>
+
+Reguar usage:
+
+[<img src="http://i.imgur.com/POkMUNv.gif" width="800"/>](http://i.imgur.com/POkMUNv.gif)
+
+Diff mode:
+
+[<img src="http://i.imgur.com/6N9haPt.gif" width="800"/>](http://i.imgur.com/6N9haPt.gif)
 
 Related Plugins
 ---------------
