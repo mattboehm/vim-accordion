@@ -120,7 +120,7 @@ endfunction
 "}}}
 "s:ShrinkWindow() shrink a window {{{
 function! s:ShrinkWindow()
-  setl winminwidth = 0
+  setl winminwidth=0
   0 wincmd | 
   setl winfixwidth
   "if in diff mode, shrunk windows are not diffed
