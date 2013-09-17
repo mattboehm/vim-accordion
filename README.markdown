@@ -1,33 +1,44 @@
 accordion.vim
 =============
 
-Got too many vsplits? Accordion will squish all of them except the one
-currently focused and a configurable number of its neighbors on each side.
+Accordion is a vim window manager for people who love vsplits. Vsplits can be great for viewing levels of a call stack or versions of a file side-by-side, but if there are more than a few, they become too thin to comfortably read.
 
-Version 0.2.0
+Accordion lets you set the maximum number of vsplits you want to see, and shrinks the rest to be one column wide. 
+
+If you want to view changes to a file over time, it's got a fancy diff mode. Even if you're not big on vsplits, you may want to consider Accordion for this feature alone.
+
+Version 0.3.0
 
 No backwards compatability is guaranteed at this time.
 
 
 Usage
 -----
+For a much more detailed guide, please type `:help accordion` or read [doc/accordion.txt](doc/accordion.txt).
 
-Accordion can either be used to adjust the layout once or to continually
-enforce the layout for the current tab or all tabs.
+To enforce that the current tab always shows at most 3 vsplits, run `:Accordion 3`. Accordion will give you a viewport of 3 vsplits and shrink all splits outside the viewport. As you bump against the edges of the viewport, it will move with you. You can stop Accordion by running `:AccordionStop`
 
-To adjust the layout one time, run `:Accordion 3` where 3 is the number of 
-vsplits you want to be limited to seeing. To restore your layout to normal,
-run `:AccordionClear`.
+While Accordion is running, use `:AccordionZoomIn` and `AccordionZoomOut` to change the size of the viewport.
 
-If you want accordion to continually enforce a layout, try `:AccordionStart 3`
-or `:AccordionStartTab 3` (only applies to one tab). Every time you split or 
-switch windows, accordion will re-layout to enforce that you never have too 
-many vsplits crowding your screen. To turn this off, run `:AccordionStop`.
+Accordion also has a special diff mode that you can start by running `:AccordionDiff`.
+Try this when you have many versions of the same file side-by-side in chronological order.
+Accordion will shrink all but two vsplits, and visible vsplits will be diffed against each other.
+The easiest way to open versions of a file is to run [fugitive](https://github.com/tpope/vim-fugitive)'s `:Glog --reverse`, highlight the desired changes in the quickfix list, and hit the [unstack](https://github.com/mattboehm/vim-unstack) shortcut.
+See the [screenshots](#Screenshots) below for an example of diff mode in action.
 
+There are also commands to temporarily change the layout without starting/stopping. To learn more about these, type `:help accordion-running-once`.
 
-Screenshot
-----------
-<img src="http://i.imgur.com/H62uwZ3.png" width="800"/>
+Screenshots
+-----------
+
+:Accordion 3
+(Please ignore the fact that it's :AccordionStartTab at the bottom, I renamed the command.)
+
+[<img src="http://i.imgur.com/POkMUNv.gif" width="395"/>](http://i.imgur.com/POkMUNv.gif)
+
+:AccordionDiff
+
+[<img src="http://i.imgur.com/6N9haPt.gif" width="395"/>](http://i.imgur.com/6N9haPt.gif)
 
 Related Plugins
 ---------------
