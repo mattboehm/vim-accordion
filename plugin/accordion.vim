@@ -20,13 +20,17 @@ else
 endif
 "}}}
 "Commands:{{{
-command! -nargs=* Accordion call accordion#Accordion(<f-args>)
-command! AccordionClear call accordion#Clear()
-command! -nargs=1 AccordionStart call accordion#Start(<f-args>)
-command! -nargs=1 AccordionStartTab call accordion#StartTab(<f-args>)
+"start layout:
+command! -nargs=1 Accordion call accordion#StartTab(<f-args>)
+command! -nargs=1 AccordionAll call accordion#Start(<f-args>)
 command! AccordionDiff call accordion#Diff()
+"stop layout:
 command! AccordionStop call accordion#Stop()
+"change size:
 command! AccordionZoomIn call accordion#ChangeSize(-1)
 command! AccordionZoomOut call accordion#ChangeSize(1)
+"change layout without starting/stopping
+command! -nargs=* AccordionOnce call accordion#Accordion(<f-args>)
+command! AccordionClear call accordion#Clear()
 "}}}
 " vim: foldmethod=marker foldmarker={{{,}}}
