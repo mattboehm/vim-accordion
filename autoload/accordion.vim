@@ -1,7 +1,16 @@
 "Initialization:
-"{{{
-let s:accordion_running=0
-let s:opposites = {"h": "l", "l": "h", "j": "k", "k": "j"}
+"s:accordion_running: true if accordion is currently changing the layout {{{
+  "normally, accordion is triggered by the user changing windows
+  "we don't want to trigger it if accordion itself caused the change
+  let s:accordion_running = 0
+"}}}
+"s:accordion_clearing: true if accordionClear() is currently running {{{
+  "needed so that diffmode does not try to diff visible windows while accordion
+  "is clearing.
+  let s:accordion_clearing = 0
+"}}}
+"s:opposites: a mapping of directions to their opposites {{{
+  let s:opposites = {"h": "l", "l": "h", "j": "k", "k": "j"}
 "}}}
 "Exposed Functions:
 "accordion#Accordion(size) do layout. Shrink excess splits {{{
@@ -22,7 +31,7 @@ function! accordion#Accordion(...)
   "accordion can be triggered on the change of window focus
   "this is a hack so accordion doesn't recursively trigger itself
   if !s:accordion_running && size > 0
-    let s:accordion_running=1
+    let s:accordion_running = 1
     let direction = s:GetMovementDirection()
     "echom "direction " . direction
     let desired_viewport = s:GetDesiredViewport(size, direction)
@@ -32,7 +41,7 @@ function! accordion#Accordion(...)
     "jump to prevwin and back so that window history is preserved
     execute prevwin "wincmd w"
     execute curwin "wincmd w"
-    let s:accordion_running=0
+    let s:accordion_running = 0
   endif
 endfunction
 "}}}
@@ -71,29 +80,39 @@ endfunction
 "}}}
 "accordion#Clear() undo layout {{{
 function! accordion#Clear()
+  "set accordion_running and accordion_clearing to 1 {{{
+    "
   let prev_running = s:accordion_running
-  let s:accordion_running=1
+  let s:accordion_running = 1
+  let s:accordion_clearing = 1
+  "}}}
+  "save window position
   let curwin = winnr()
-  windo call s:UnshrinkWindow() | if exists("t:accordion_diff") | diffoff | endif
+  "unshrink all the windows
+  windo call s:UnshrinkWindow()
   execute curwin "wincmd w"
   wincmd =
-  let s:accordion_running=prev_running
+  let s:accordion_clearing = 0
+  let s:accordion_running = prev_running
 endfunction
 "}}}
 "accordion#ChangeSize(change) change number of splits (tab if set else global {{{
 function! accordion#ChangeSize(change)
+  "change tab variable if it exists
   if exists("t:accordion_size")
     let t:accordion_size += a:change
     call accordion#Accordion()
+  "else change global if it exists
   elseif exists("g:accordion_size")
     let g:accordion_size += a:change
     call accordion#Accordion()
+  "no tab or global setting to change
   else
     echom "Accordion can't change size; none set."
   endif
 endfunction
 "}}}
-"Private Functions:
+"Shrinking:
 "s:WindowIsShrunk() returns true if current window is shrunk {{{
 function! s:WindowIsShrunk()
   return &winminwidth == 0
@@ -101,9 +120,10 @@ endfunction
 "}}}
 "s:ShrinkWindow() shrink a window {{{
 function! s:ShrinkWindow()
-  setl winminwidth=0
+  setl winminwidth = 0
   0 wincmd | 
   setl winfixwidth
+  "if in diff mode, shrunk windows are not diffed
   if exists("t:accordion_diff")
     diffoff
   endif
@@ -112,11 +132,14 @@ endfunction
 "s:UnshrinkWindow() reset a window to normal {{{
 function! s:UnshrinkWindow()
   setl nowinfixwidth
-  if exists("t:accordion_diff")
+  "if in diff mode, diff unshrunk windows,
+  "but not if UnshrinkWindow was called by AccordionClear()
+  if exists("t:accordion_diff") && !s:accordion_clearing
     diffthis
   endif
 endfunction
 "}}}
+"Calculate Viewport:
 "s:GetMovementDirection() Get direction just moved when switching windows {{{
 "hjkl: left/down/up/right
 "x: if a window was just deleted
@@ -146,16 +169,20 @@ endfunction
 "}}}
 "s:GetSpace(direction) return how many windows are in a direction from the current window {{{
 function! s:GetSpace(direction)
+    "save the current window so we can go back to it later
     let curwin = winnr()
     let space = 0
     while space < 999
       let prevwin = winnr()
+      "try to go one window over
       execute "wincmd" a:direction
+      "if we're not in a new window, there are no more windows in the direction
       if winnr() == prevwin
         break
       endif
       let space += 1
     endwhile
+    "go back to the initial window
     execute curwin "wincmd w"
     return space
 endfunction
@@ -165,11 +192,16 @@ endfunction
 "direction: which direction the user just moved
 function! s:GetDesiredViewport(size, direction)
   let desired_viewport = {}
+  "initially set viewport to show windows to the right of curwin
   if !exists("t:accordion_last_desired_viewport")
     let desired_viewport["h"] = 0
     let desired_viewport["l"] = a:size - 1
+  "if the last motion was up/down or a window was just deleted, use the same
+  "viewport as last time
   elseif a:direction == "u" || a:direction == "d" || a:direction == "x"
     let desired_viewport = t:accordion_last_desired_viewport
+  "if the last motion was left/right, adjust the viewport so it looks the same
+  "to the user.
   elseif a:direction == "h" || a:direction == "l"
     let desired_viewport = t:accordion_last_desired_viewport
     if desired_viewport[a:direction] > 0
@@ -177,6 +209,7 @@ function! s:GetDesiredViewport(size, direction)
       let desired_viewport[s:opposites[a:direction]] += 1
     endif
   endif
+  "save the viewport so that we can refer to it the next time.
   if len(desired_viewport)
     let t:accordion_last_desired_viewport = desired_viewport
   endif
@@ -190,6 +223,8 @@ endfunction
 function! s:GetAdjustedViewport(desired_viewport)
   let space = {}
   let overflow = {}
+  "calculate space/overflow. if desired viewport is 3 to the right, but there is
+  "only 1 window to the right, the space for the right side is 1 and the overflow for the LEFT is 2 (3 - 1)
   for [direction, padding] in items(a:desired_viewport)
     let space[direction] = s:GetSpace(direction)
     let ovf = padding - space[direction]
@@ -197,21 +232,20 @@ function! s:GetAdjustedViewport(desired_viewport)
       let ovf = 0
     endif
     let overflow[s:opposites[direction]] = ovf
-    "echom "dir sp ovf" . string(direction) . string(space) . string(ovf)
   endfor
   let adjusted_viewport = {}
+  "padding for a direction = actual padding + overflow (from other direction)
+  "but cannot exceed the actual space.
   for [direction, padding] in items(a:desired_viewport)
     let adjusted_viewport[direction] = min([space[direction], padding + overflow[direction]])
   endfor
   return adjusted_viewport
 endfunction
 "}}}
+"Set Viewport:
 "s:SetViewport(desired_viewport) adjust the desired viewport and set it {{{
 function! s:SetViewport(desired_viewport)
-  "echom "sv0 ".string(winnr())
-  "echom "desired:" . string(a:desired_viewport)
   let adjusted_viewport = s:GetAdjustedViewport(a:desired_viewport)
-  "echom "adjusted:" . string(adjusted_viewport)
   call accordion#Clear()
   for [direction, padding] in items(adjusted_viewport)
     call s:SetViewportInDirection(direction, padding)
@@ -223,22 +257,26 @@ endfunction
 "direction should be h or l for left/right
 function! s:SetViewportInDirection(direction, padding)
   let curwin = winnr()
-  "echom "sv1 ".string(curwin)
-  "go over `padding` times in the direction
+  "unshrink the current window and `padding` windows in `direction`
   let padding = a:padding
   while padding >= 0
+    "FIXME: current window gets unshrunk for each direction. Not currently an
+    "issue, but may become one.
     call s:UnshrinkWindow()
     let prevWin = winnr()
     execute "wincmd" a:direction
     let padding -= 1
   endwhile
-  "go one more window over, and detect if the window number changed or
-  "not
+  "since the above loop unshrinks and then moves, we should now be on the
+  "first window to shrink, unless there are no more windows.
+  "while there's still a new window under the cursor, shrink the window and
+  "move again.
   while winnr() != prevWin
     call s:ShrinkWindow()
     let prevWin = winnr()
     execute "wincmd" a:direction
   endwhile
+  "go back to the initial window
   execute curwin "wincmd w"
 endfunction
 "}}}
