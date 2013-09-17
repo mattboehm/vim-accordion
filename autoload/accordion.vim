@@ -187,6 +187,30 @@ function! s:GetSpace(direction)
     return space
 endfunction
 "}}}
+"s:GetViewportSize(viewport) get the # of unshrunk windows in the viewport {{{
+function! s:GetViewportSize(viewport)
+  return a:viewport["h"] + a:viewport["l"] + 1
+endfunction
+"}}}
+"s:SetViewportSize(viewport, size) adjusts viewport to the desired size {{{
+"does this by adding/removing windows to the right side
+function! s:SetViewportSize(viewport, size)
+  "get the current size of the viewport
+  let current_size = s:GetViewportSize(a:viewport)
+  "copy the viewport so we don't modify the original
+  let resized_viewport = copy(a:viewport)
+  "note: windows_to_add could be negative if we need to remove windows
+  let windows_to_add = a:size - current_size
+  let resized_viewport["l"] += windows_to_add
+  "if it was negative, it's possible that this direction is now < 0
+  "move these excess subtractions to the other side
+  if resized_viewport["l"] < 0
+    let resized_viewport["h"] += resized_viewport["l"]
+    let resized_viewport["l"] = 0
+  endif
+  return resized_viewport
+endfunction
+"}}}
 "s:GetDesiredViewport(size, direction) get the ideal viewport {{{
 "size: viewport size
 "direction: which direction the user just moved
@@ -209,8 +233,10 @@ function! s:GetDesiredViewport(size, direction)
       let desired_viewport[s:opposites[a:direction]] += 1
     endif
   endif
-  "save the viewport so that we can refer to it the next time.
   if len(desired_viewport)
+    "if the size has changed since the last run, we need to adjust the desired viewport
+    let desired_viewport = s:SetViewportSize(desired_viewport, a:size)
+    "save the viewport so that we can refer to it the next time.
     let t:accordion_last_desired_viewport = desired_viewport
   endif
   return desired_viewport
