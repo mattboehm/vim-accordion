@@ -32,7 +32,7 @@ Screenshots
 -----------
 
 :Accordion 3
-(Please ignore the fact that it's :AccordionStartTab at the bottom, I renamed the command.)
+(Please ignore the fact that it's :AccordionStart at the bottom, I renamed the command.)
 
 [<img src="http://i.imgur.com/POkMUNv.gif" width="395"/>](http://i.imgur.com/POkMUNv.gif)
 
