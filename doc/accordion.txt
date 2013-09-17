@@ -3,62 +3,104 @@
 Author: Matthew Boehm <http://github.com/mattboehm>
 
 ==============================================================================
-INTRODUCTION                                                         *accordion*
+INTRODUCTION                                     *accordion*
 
-Got too many vsplits? Accordion will squish all of them except the one
-currently focused and a configurable number of its neighbors on each side.
+Accordion is a window manager for people who love vsplits. Tell it the maximum
+number of vsplits you want to see and any extra vsplits will be shrunk for
+you. As you change windows, the viewport moves with you.
 
-Accordion can either be used to adjust the layout once or to continually
-enforce the layout for the current tab or all tabs.
-
-To adjust the layout one time, type 'Accordion 3' where 3 is the number of 
-vsplits you want to be limited to seeing. To restore your layout to normal,
-type 'AccordionClear'.
-
-If you want accordion to continually enforce a layout, try 'AccordionStart 3' 
-or 'AccordionStartTab 3' (only applies to one tab). Every time you split or 
-switch windows, accordion will re-layout to enforce that you never have too 
-many vsplits crowding your screen. To turn this off, use 'AccordionStop'.
 
 ==============================================================================
-COMMANDS                                                    *accordion-commands*
+COMMANDS                                         *accordion-commands*
 
-:Accordion <size>                                                   *:Accordion*
-    Squish all windows except for up to <size> around the active window
+------------------------------------------------------------------------------
+STARTING                                         *accordion-starting*
 
-:AccordionClear                                                *:AccordionClear*
-    Unlock/resize windows
+:Accordion <size>                                *:Accordion*
+    Start enforcing that the current tab is <size> vsplits wide
 
-:AccordionStart <size>                                         *:AccordionStart*
-    Whenever the window is switched, re-layout
-    
-:AccordionStartTab <size>                                   *:AccordionStartTab*
-    Same as AccordionStart but only applies to current tab
+:AccordionAll <size>                             *:AccordionAll*
+    Start enforcing that all tabs are <size> vsplits wide
 
-:AccordionDiff                                                  *:AccordionDiff*
-    Run accordion in diff mode.
-    Always tries to show two windows and diffs the visible windows.
+:AccordionDiff                                   *:AccordionDiff*
+    Start enforcing that the current tab shows 2 vsplits which 
+    are always diffed against each other.
 
-:AccordionStop                                                  *:AccordionStop*
-    Turn off auto-layout.
+------------------------------------------------------------------------------
+STOPPING                                         *accordion-stopping*
+
+:AccordionStop                                   *:AccordionStop*
+    Turn off auto-layout and reset window sizes.
     Tries to turn off tab-specific rule. If there is none, tries to turn off
     global rule.
 
-==============================================================================
-OPTIONS                                                      *accordion-options*
-                                                           *accordion_listening*
-Values: 0/1
-Default: 1
-Whether or not accordion tries to layout after you
-switch windows (assuming you've called AccordionStart)
+------------------------------------------------------------------------------
+ZOOMING                                          *accordion-zooming*
+
+:AccordionZoomIn                                 *:AccordionZoomIn*
+    Subtract 1 from maximum number of vsplits
+    Tries to modify tab setting. If there is none, modifies global setting
+
+:AccordionZoomOut                                *:AccordionZoomOut*
+    Add 1 to maximum number of vsplits
+    Tries to modify tab setting. If there is none, modifies global setting
+
+------------------------------------------------------------------------------
+RUNNING ONCE                                     *accordion-running-once*
+
+:AccordionOnce <size>                            *:AccordionOnce*
+    Show only <size> windows and shrink the rest.
+    This does not start a layout, so if you switch windows, the viewport won't
+    update.
+    To start a layout, see |accordion-running|
+    To reset your windows to normal, run |:AccordionClear|
+
+:AccordionClear                                  *:AccordionClear*
+    Unlock/resize windows
+    If accordion is still running, as soon as you switch windows, the layout
+    will be applied again
+    If you want to stop accordion from running, see |accordion-stopping|.
 
 ==============================================================================
-LIMITATIONS                                              *accordion-limitations*
+CONFIGURATION                                    *accordion-configuration*
+
+------------------------------------------------------------------------------
+SUGGESTED VIMRC SETTINGS                         *accordion-suggested-settings*
+
+"If you want to always enforce a maximum number of vsplits to 4:
+"AccordionAll 4
+
+"Set shortcuts for most frequently used commands
+"Use whatever shortcuts you want. I typically prefer <leader> to <C-w>
+"but chose these as they're less likely to conflict with your current mappings
+"and <C-w> kinda makes sense as you are messing with windows
+"nnoremap <C-w>2 :Accordion 2<CR>
+"nnoremap <C-w>3 :Accordion 3<CR>
+"nnoremap <C-w>0 :AccordionStop<CR>
+
+"More shortcuts, without a good available <C-w> option
+"nnoremap <leader>d :AccordionDiff<CR>
+"nnoremap <leader>i :AccordionZoomIn<CR>
+"nnoremap <leader>o :AccordionZoomOut<CR>
+
+------------------------------------------------------------------------------
+OPTIONS                                          *accordion-options*
+
+accordion_listening                              *accordion_listening*
+Values: 0/1
+Default: 1
+If true, accordion listens for the window change event.
+This must be 1 to use any of the commands in |accordion-starting|.
+You can set this to 0 if you're only planning to use the commands in
+|accordion-running-once| or do not plan on using accordion at all.
+
+==============================================================================
+LIMITATIONS                                      *accordion-limitations*
 
 1. |AccordionStop| only calls |AccordionClear| on the current tab even if
     there are other tabs that were locked
 2. Accordions are not recalculated when moving up/down. Using horizontal 
     splits in general may cause slightly unexpected behaviors. Please open an 
-    issue on github if you run into any of these.
+    issue on github if any behavior surprises you.
 
  vim:tw=78:et:ft=help:norl:
