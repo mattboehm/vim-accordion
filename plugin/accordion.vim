@@ -29,4 +29,4 @@ command! AccordionStop call accordion#Stop()
 command! AccordionZoomIn call accordion#ChangeSize(-1)
 command! AccordionZoomOut call accordion#ChangeSize(1)
 "}}}
-" vim: foldmethod=marker foldmarker={{{,}}}
+" vim: et sw=2 sts=2 foldmethod=marker foldmarker={{{,}}}
