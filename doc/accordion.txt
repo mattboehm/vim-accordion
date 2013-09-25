@@ -1,9 +1,27 @@
 *accordion.vim* Minimize all but a few vsplits 
+*accordion*
 
 Author: Matthew Boehm <http://github.com/mattboehm>
 
 ==============================================================================
-INTRODUCTION                                     *accordion*
+CONTENTS                                         *accordion-contents*
+
+  ╓ Introduction ─────────────────────────────── |accordion-intro|
+  ║                                                                           
+  ╠ Commands ─────────────────────────────────── |accordion-commands|
+  ║  ├ Starting................................. |accordion-starting|
+  ║  ├ Stopping................................. |accordion-stopping|
+  ║  ├ Zooming.................................. |accordion-zooming|
+  ║  └ Running Once............................. |accordion-running-once|
+  ║                                                                           
+  ╠ Configuration ────────────────────────────── |accordion-configuration|
+  ║  ├ Suggested vimrc settings................. |accordion-suggested-settings|
+  ║  └ Options.................................. |accordion-options|
+  ║                                                                           
+  ╙ Limitations ──────────────────────────────── |accordion-limitations|
+
+==============================================================================
+INTRODUCTION                                     *accordion-intro*
 
 Accordion is a window manager for people who love vsplits. Tell it the maximum
 number of vsplits you want to see and any extra vsplits will be shrunk for
@@ -107,4 +125,4 @@ LIMITATIONS                                      *accordion-limitations*
     splits in general may cause slightly unexpected behaviors. Please open an 
     issue on github if any behavior surprises you.
 
- vim:tw=78:et:ft=help:norl:
+ vim:tw=78:et:ft=help:norl:fenc=utf8
