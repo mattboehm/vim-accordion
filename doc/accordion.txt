@@ -67,21 +67,25 @@ CONFIGURATION                                    *accordion-configuration*
 ------------------------------------------------------------------------------
 SUGGESTED VIMRC SETTINGS                         *accordion-suggested-settings*
 
-"If you want to always enforce a maximum number of vsplits to 4:
-"AccordionAll 4
+If you want to always enforce a maximum number of vsplits to 4 >
+  AccordionAll 4
+<
 
-"Set shortcuts for most frequently used commands
-"Use whatever shortcuts you want. I typically prefer <leader> to <C-w>
-"but chose these as they're less likely to conflict with your current mappings
-"and <C-w> kinda makes sense as you are messing with windows
-"nnoremap <C-w>2 :Accordion 2<CR>
-"nnoremap <C-w>3 :Accordion 3<CR>
-"nnoremap <C-w>0 :AccordionStop<CR>
+Use whatever shortcuts you want. I typically prefer <leader> to <C-w>
+but chose these as they're less likely to conflict with your current mappings
+and <C-w> kinda makes sense as you are messing with windows >
 
-"More shortcuts, without a good available <C-w> option
-"nnoremap <leader>d :AccordionDiff<CR>
-"nnoremap <leader>i :AccordionZoomIn<CR>
-"nnoremap <leader>o :AccordionZoomOut<CR>
+  "Set shortcuts for most frequently used commands
+  nnoremap <C-w>2 :Accordion 2<CR>
+  nnoremap <C-w>3 :Accordion 3<CR>
+  nnoremap <C-w>0 :AccordionStop<CR>
+
+  "More shortcuts, without a good available <C-w> option
+  nnoremap <leader>d :AccordionDiff<CR>
+  nnoremap <leader>i :AccordionZoomIn<CR>
+  nnoremap <leader>o :AccordionZoomOut<CR>
+<
+
 
 ------------------------------------------------------------------------------
 OPTIONS                                          *accordion-options*
