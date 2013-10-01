@@ -9,8 +9,14 @@ If you want to view changes to a file over time, it's got a fancy diff mode. Eve
 
 Version 0.3.0
 
-No backwards compatability is guaranteed at this time.
+But I Don't Use Splits!
+-----------------------
+If you don't typically use a lot of splits, there are a few other use cases where accordion can be helpful:
 
+* after viewing stack traces with [unstack](https://github.com/mattboehm/vim-unstack)
+* for the diff mode described and demoed below to view changes to a file over time
+
+If you're not interested in any of these use cases then no worries; keep using vim in whatever way works best for you =).
 
 Usage
 -----
