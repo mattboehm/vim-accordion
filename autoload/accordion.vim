@@ -115,7 +115,7 @@ endfunction
 "Shrinking:
 "s:WindowIsShrunk() returns true if current window is shrunk {{{
 function! s:WindowIsShrunk()
-  return &winminwidth == 0
+  return &winfixwidth
 endfunction
 "}}}
 "s:ShrinkWindow() shrink a window {{{
