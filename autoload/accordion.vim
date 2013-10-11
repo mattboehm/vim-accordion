@@ -216,6 +216,7 @@ endfunction
 "direction: which direction the user just moved
 function! s:GetDesiredViewport(size, direction)
   let desired_viewport = {}
+  let should_redraw = 1
   "initially set viewport to show windows to the right of curwin
   if !exists("t:accordion_last_desired_viewport")
     let desired_viewport["h"] = 0
@@ -232,14 +233,30 @@ function! s:GetDesiredViewport(size, direction)
       let desired_viewport[a:direction] -= 1
       let desired_viewport[s:opposites[a:direction]] += 1
     endif
+    "if the current window's not shrunk, there's no need to redraw
+    "we skip redrawing to be more efficient and to let users resize the
+    "visible splits
+    if !s:WindowIsShrunk()
+      let should_redraw = 0
+    endif
   endif
   if len(desired_viewport)
     "if the size has changed since the last run, we need to adjust the desired viewport
-    let desired_viewport = s:SetViewportSize(desired_viewport, a:size)
+    let resized_viewport = s:SetViewportSize(desired_viewport, a:size)
+    "if the viewport size has changed, we should redraw no matter what
+    if resized_viewport != desired_viewport
+      let should_redraw = 1
+    endif
     "save the viewport so that we can refer to it the next time.
-    let t:accordion_last_desired_viewport = desired_viewport
+    let t:accordion_last_desired_viewport = resized_viewport
+    if should_redraw
+      return resized_viewport
+    else
+      return {}
+    endif
+  else
+    return {}
   endif
-  return desired_viewport
 endfunction
 "}}}
 "s:GetAdjustedViewport(desired_viewport) adjust the desired viewport {{{
