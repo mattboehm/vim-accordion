@@ -289,7 +289,6 @@ endfunction
 "s:SetViewport(desired_viewport) adjust the desired viewport and set it {{{
 function! s:SetViewport(desired_viewport)
   let adjusted_viewport = s:GetAdjustedViewport(a:desired_viewport)
-  call accordion#Clear()
   for [direction, padding] in items(adjusted_viewport)
     call s:SetViewportInDirection(direction, padding)
   endfor
