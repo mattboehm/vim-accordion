@@ -288,11 +288,15 @@ endfunction
 "Set Viewport:
 "s:SetViewport(desired_viewport) adjust the desired viewport and set it {{{
 function! s:SetViewport(desired_viewport)
+  "set lazyredraw so that vim doesn't render windows while we're resizing them
+  let oldlazyredraw = &lazyredraw
+  set lazyredraw
   let adjusted_viewport = s:GetAdjustedViewport(a:desired_viewport)
   for [direction, padding] in items(adjusted_viewport)
     call s:SetViewportInDirection(direction, padding)
   endfor
   wincmd =
+  let &lazyredraw = oldlazyredraw
 endfunction
 "}}}
 "s:SetViewportInDirection(direction, padding) unshrink/shrink windows in 1 direction {{{
