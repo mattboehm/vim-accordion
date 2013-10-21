@@ -100,12 +100,20 @@ endfunction
 function! accordion#ChangeSize(change)
   "change tab variable if it exists
   if exists("t:accordion_size")
-    let t:accordion_size += a:change
-    call accordion#Accordion()
+    if t:accordion_size + a:change >= 1
+      let t:accordion_size += a:change
+      call accordion#Accordion()
+    else
+      echoerr "Accordion size can't be less than 1"
+    endif
   "else change global if it exists
   elseif exists("g:accordion_size")
-    let g:accordion_size += a:change
-    call accordion#Accordion()
+    if g:accordion_size + a:change >= 1
+      let g:accordion_size += a:change
+      call accordion#Accordion()
+    else
+      echoerr "Accordion size can't be less than 1"
+    endif
   "no tab or global setting to change
   else
     echom "Accordion can't change size; none set."
