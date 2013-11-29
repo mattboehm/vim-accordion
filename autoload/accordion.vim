@@ -1,4 +1,3 @@
-"Initialization:
 "s:accordion_running: true if accordion is currently changing the layout {{{
   "normally, accordion is triggered by the user changing windows
   "we don't want to trigger it if accordion itself caused the change
@@ -92,6 +91,7 @@ function! accordion#Clear()
   windo call s:UnshrinkWindow()
   execute curwin "wincmd w"
   wincmd =
+  call s:RestoreVisibleWindowViews()
   let s:accordion_clearing = 0
   let s:accordion_running = prev_running
 endfunction
@@ -120,6 +120,10 @@ endfunction
 "}}}
 "s:ShrinkWindow() shrink a window {{{
 function! s:ShrinkWindow()
+  "save the viewport before shrinking as shrinking can mess up window position
+  if !exists("w:accordion_view")
+    let w:accordion_view=winsaveview()
+  endif
   setl winminwidth=0
   0 wincmd | 
   setl winfixwidth
@@ -136,6 +140,20 @@ function! s:UnshrinkWindow()
   "but not if UnshrinkWindow was called by AccordionClear()
   if exists("t:accordion_diff") && !s:accordion_clearing
     diffthis
+  endif
+endfunction
+"}}}
+"s:RestoreVisibleWindowViews() restore all visible windows' dimensions
+function! s:RestoreVisibleWindowViews()
+  windo if !s:WindowIsShrunk() | call s:RestoreCurrentWindowView() | endif
+endfunction
+"}}}
+"s:RestoreCurrentWindowView() restore the current window's dimensions
+"XXX: clears the view variable after restoring
+function! s:RestoreCurrentWindowView()
+  if exists("w:accordion_view")
+    call winrestview(w:accordion_view)
+    unlet w:accordion_view
   endif
 endfunction
 "}}}
@@ -296,6 +314,7 @@ function! s:SetViewport(desired_viewport)
     call s:SetViewportInDirection(direction, padding)
   endfor
   wincmd =
+  call s:RestoreVisibleWindowViews()
   let &lazyredraw = oldlazyredraw
 endfunction
 "}}}
