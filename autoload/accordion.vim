@@ -166,14 +166,21 @@ endfunction
 function! s:GetMovementDirection()
   let newwin = winnr()
   let prevwin = winnr("#")
+  "since buffer numbers always increase from up to down and left to right,
+  "we know that if the buffer number has increased since the last move,
+  "the direction must be down or right
   if newwin == prevwin
     return "x"
+  elseif newwin < prevwin
+    let possible_directions = ["h", "k"]
+  else "newwin > prevwin
+    let possible_directions = ["l", "j"]
   endif
   "go to previous window
   execute prevwin "wincmd w"
   let result = "?"
   "try moving in all 4 directions and see if you end up in the new window
-  for direction in ["h", "j", "k", "l"]
+  for direction in possible_directions
     execute "wincmd" direction
     if winnr() == newwin
       let result = direction
