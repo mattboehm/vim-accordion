@@ -143,12 +143,12 @@ function! s:UnshrinkWindow()
   endif
 endfunction
 "}}}
-"s:RestoreVisibleWindowViews() restore all visible windows' dimensions
+"s:RestoreVisibleWindowViews() restore all visible windows' dimensions {{{
 function! s:RestoreVisibleWindowViews()
   windo if !s:WindowIsShrunk() | call s:RestoreCurrentWindowView() | endif
 endfunction
 "}}}
-"s:RestoreCurrentWindowView() restore the current window's dimensions
+"s:RestoreCurrentWindowView() restore the current window's dimensions {{{
 "XXX: clears the view variable after restoring
 function! s:RestoreCurrentWindowView()
   if exists("w:accordion_view")
