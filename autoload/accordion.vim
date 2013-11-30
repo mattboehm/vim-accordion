@@ -194,22 +194,22 @@ endfunction
 "}}}
 "s:GetSpace(direction) return how many windows are in a direction from the current window {{{
 function! s:GetSpace(direction)
-    "save the current window so we can go back to it later
-    let curwin = winnr()
-    let space = 0
-    while space < 999
-      let prevwin = winnr()
-      "try to go one window over
-      execute "wincmd" a:direction
-      "if we're not in a new window, there are no more windows in the direction
-      if winnr() == prevwin
-        break
-      endif
-      let space += 1
-    endwhile
-    "go back to the initial window
-    execute curwin "wincmd w"
-    return space
+  "save the current window so we can go back to it later
+  let curwin = winnr()
+  let space = 0
+  while space < 999
+    let prevwin = winnr()
+    "try to go one window over
+    execute "wincmd" a:direction
+    "if we're not in a new window, there are no more windows in the direction
+    if winnr() == prevwin
+      break
+    endif
+    let space += 1
+  endwhile
+  "go back to the initial window
+  execute curwin "wincmd w"
+  return space
 endfunction
 "}}}
 "s:GetViewportSize(viewport) get the # of unshrunk windows in the viewport {{{
