@@ -7,7 +7,7 @@ Accordion lets you set the maximum number of vsplits you want to see, and shrink
 
 If you want to view changes to a file over time, it's got a fancy diff mode. Even if you're not big on vsplits, you may want to consider Accordion for this feature alone.
 
-Version 0.4.0
+Version 0.5.0
 
 But I Don't Use Splits!
 -----------------------

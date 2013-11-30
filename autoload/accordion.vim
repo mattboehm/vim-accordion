@@ -32,7 +32,7 @@ function! accordion#Accordion(...)
   if !s:accordion_running && size > 0
     let s:accordion_running = 1
     let direction = s:GetMovementDirection()
-    "echom "direction " . direction
+    "echom "direction " . string(direction)
     let desired_viewport = s:GetDesiredViewport(size, direction)
     if len(desired_viewport)
       call s:SetViewport(desired_viewport)
@@ -80,7 +80,6 @@ endfunction
 "accordion#Clear() undo layout {{{
 function! accordion#Clear()
   "set accordion_running and accordion_clearing to 1 {{{
-    "
   let prev_running = s:accordion_running
   let s:accordion_running = 1
   let s:accordion_clearing = 1
@@ -170,7 +169,7 @@ function! s:GetMovementDirection()
   "we know that if the buffer number has increased since the last move,
   "the direction must be down or right
   if newwin == prevwin
-    return "x"
+    return {"direction": "x"}
   elseif newwin < prevwin
     let possible_directions = ["h", "k"]
   else "newwin > prevwin
@@ -178,18 +177,49 @@ function! s:GetMovementDirection()
   endif
   "go to previous window
   execute prevwin "wincmd w"
-  let result = "?"
+  let result = {"direction": "?"}
   "try moving in all 4 directions and see if you end up in the new window
   for direction in possible_directions
-    execute "wincmd" direction
-    if winnr() == newwin
-      let result = direction
+    let num_movements = s:GetNumMovementsInDirection(newwin, direction)
+    if num_movements != -1
+      let result = {"direction": direction, "magnitude": num_movements}
       break
     endif
-    execute prevwin "wincmd w"
   endfor
   execute newwin "wincmd w"
   return result
+endfunction
+"}}}
+"s:GetNumMovementsInDirection(target, direction) return how many times you {{{
+"have to move in `direction` to reach `target`. Return -1 if wrong direction
+function! s:GetNumMovementsInDirection(target, direction)
+  let start = winnr()
+  let current = start
+  "the maximum number of movements we have to try. this works because buffers
+  "are numbered sequentially
+  let max_distance = abs(start - a:target)
+  let num_movements = 0
+  "set to true if we couldn't find the window in that direction
+  let aborted = 0
+  while current != a:target
+    exe "wincmd" a:direction
+    let num_movements += 1
+    let previous = current
+    let current = winnr()
+    "return if no more windows in this direction
+    "return if we've gone farther than the max distance
+    if current == previous || abs(start - current) > max_distance
+      let aborted = 1
+      break
+    endif
+  endwhile
+  "go back to the start window so that this function has no side effects
+  execute start "wincmd w"
+  if aborted
+    return -1
+  else
+    return num_movements
+  endif
 endfunction
 "}}}
 "s:GetSpace(direction) return how many windows are in a direction from the current window {{{
@@ -242,22 +272,23 @@ endfunction
 function! s:GetDesiredViewport(size, direction)
   let desired_viewport = {}
   let should_redraw = 1
+  let dir = a:direction["direction"]
   "initially set viewport to show windows to the right of curwin
   if !exists("t:accordion_last_desired_viewport")
     let desired_viewport["h"] = 0
     let desired_viewport["l"] = a:size - 1
   "if the last motion was up/down or a window was just deleted, use the same
   "viewport as last time
-  elseif a:direction == "u" || a:direction == "d" || a:direction == "x"
+  elseif dir == "u" || dir == "d" || dir == "x"
     let desired_viewport = t:accordion_last_desired_viewport
   "if the last motion was left/right, adjust the viewport so it looks the same
   "to the user.
-  elseif a:direction == "h" || a:direction == "l"
+  elseif dir == "h" || dir == "l"
     let desired_viewport = t:accordion_last_desired_viewport
-    if desired_viewport[a:direction] > 0
-      let desired_viewport[a:direction] -= 1
-      let desired_viewport[s:opposites[a:direction]] += 1
-    endif
+    let desired_viewport[dir] = 
+      \ max([desired_viewport[dir] - a:direction["magnitude"], 0])
+    let desired_viewport[s:opposites[dir]] = 
+      \ min([desired_viewport[s:opposites[dir]] + a:direction["magnitude"], a:size - 1])
     "if the current window's not shrunk, there's no need to redraw
     "we skip redrawing to be more efficient and to let users resize the
     "visible splits
