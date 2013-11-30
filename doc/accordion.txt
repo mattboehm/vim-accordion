@@ -58,6 +58,7 @@ ZOOMING                                          *accordion-zooming*
 :AccordionZoomIn                                 *:AccordionZoomIn*
     Subtract 1 from maximum number of vsplits
     Tries to modify tab setting. If there is none, modifies global setting
+    Raises an error if the new size would be less than 1
 
 :AccordionZoomOut                                *:AccordionZoomOut*
     Add 1 to maximum number of vsplits

@@ -99,12 +99,20 @@ endfunction
 function! accordion#ChangeSize(change)
   "change tab variable if it exists
   if exists("t:accordion_size")
-    let t:accordion_size += a:change
-    call accordion#Accordion()
+    if t:accordion_size + a:change >= 1
+      let t:accordion_size += a:change
+      call accordion#Accordion()
+    else
+      echoerr "Accordion size can't be less than 1"
+    endif
   "else change global if it exists
   elseif exists("g:accordion_size")
-    let g:accordion_size += a:change
-    call accordion#Accordion()
+    if g:accordion_size + a:change >= 1
+      let g:accordion_size += a:change
+      call accordion#Accordion()
+    else
+      echoerr "Accordion size can't be less than 1"
+    endif
   "no tab or global setting to change
   else
     echom "Accordion can't change size; none set."
@@ -281,6 +289,7 @@ endfunction
 "direction: which direction the user just moved
 function! s:GetDesiredViewport(size, direction)
   let desired_viewport = {}
+  let resized_viewport = {}
   let should_redraw = 1
   let dir = a:direction["direction"]
   "initially set viewport to show windows to the right of curwin
@@ -302,7 +311,9 @@ function! s:GetDesiredViewport(size, direction)
     "if the current window's not shrunk, there's no need to redraw
     "we skip redrawing to be more efficient and to let users resize the
     "visible splits
-    if !s:WindowIsShrunk()
+    "If the user's just called :vsp and added a new window, we still need to
+    "redraw
+    if !s:WindowIsShrunk() && winnr("$") == get(t:, "accordion_num_windows")
       let should_redraw = 0
     endif
   endif
@@ -315,14 +326,12 @@ function! s:GetDesiredViewport(size, direction)
     endif
     "save the viewport so that we can refer to it the next time.
     let t:accordion_last_desired_viewport = resized_viewport
-    if should_redraw
-      return resized_viewport
-    else
-      return {}
+    if !should_redraw
+      let resized_viewport = {}
     endif
-  else
-    return {}
   endif
+  let t:accordion_num_windows = winnr("$")
+  return resized_viewport
 endfunction
 "}}}
 "s:GetAdjustedViewport(desired_viewport) adjust the desired viewport {{{
