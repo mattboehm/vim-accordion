@@ -154,7 +154,7 @@ endfunction
 "Shrinking:
 "s:WindowIsShrunk() returns true if current window is shrunk {{{
 function! s:WindowIsShrunk()
-  return &winfixwidth
+  return &winfixwidth || &winfixheight
 endfunction
 "}}}
 "s:ShrinkWindow() shrink a window {{{
@@ -163,9 +163,15 @@ function! s:ShrinkWindow()
   if !exists("w:accordion_view")
     let w:accordion_view=winsaveview()
   endif
-  setl winminwidth=0
-  0 wincmd | 
-  setl winfixwidth
+  if g:accordion_mode == "v"
+    setl winminwidth=0
+    0 wincmd |
+    setl winfixwidth
+  else
+    setl winminheight=0
+    0 wincmd _
+    setl winfixheight
+  endif
   "if in diff mode, shrunk windows are not diffed
   if exists("t:accordion_diff")
     diffoff
@@ -174,7 +180,11 @@ endfunction
 "}}}
 "s:UnshrinkWindow() reset a window to normal {{{
 function! s:UnshrinkWindow()
-  setl nowinfixwidth
+  if g:accordion_mode == "v"
+    setl nowinfixwidth
+  else
+    setl nowinfixheight
+  endif
   "if in diff mode, diff unshrunk windows,
   "but not if UnshrinkWindow was called by AccordionClear()
   if exists("t:accordion_diff") && !s:accordion_clearing
