@@ -19,6 +19,9 @@ else
   augroup end
 endif
 "}}}
+"Settings:{{{
+let g:accordion_mode = get(g:, "accordion_mode", "v")
+"}}}
 "Commands:{{{
 "start layout:
 command! -nargs=1 Accordion call accordion#StartTab(<f-args>)

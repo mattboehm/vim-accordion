@@ -129,6 +129,28 @@ function! accordion#Unpause()
   let s:accordion_running = 0
 endfunction
 "}}}
+"Directions:
+let s:dir = {}
+"s:dir.Fw() forwards {{{
+function! s:dir.Fw() dict
+  return g:accordion_mode == "v"? "l" : "j"
+endfunction
+"}}}
+"s:dir.Bw() backwards {{{
+function! s:dir.Bw() dict
+  return g:accordion_mode == "v"? "h" : "k"
+endfunction
+"}}}
+"s:dir.AltFw() forwards in opposite mode {{{
+function! s:dir.AltFw() dict
+  return g:accordion_mode == "v"? "j" : "l"
+endfunction
+"}}}
+"s:dir.AltBw() backwards in opposite mode {{{
+function! s:dir.AltBw() dict
+  return g:accordion_mode == "v"? "k" : "h"
+endfunction
+"}}}
 "Shrinking:
 "s:WindowIsShrunk() returns true if current window is shrunk {{{
 function! s:WindowIsShrunk()
@@ -189,9 +211,9 @@ function! s:GetMovementDirection()
   if newwin == prevwin
     return {"direction": "x"}
   elseif newwin < prevwin
-    let possible_directions = ["h", "k"]
+    let possible_directions = [s:dir.Bw(), s:dir.AltBw()]
   else "newwin > prevwin
-    let possible_directions = ["l", "j"]
+    let possible_directions = [s:dir.Fw(), s:dir.AltFw()]
   endif
   "go to previous window
   execute prevwin "wincmd w"
@@ -262,7 +284,7 @@ endfunction
 "}}}
 "s:GetViewportSize(viewport) get the # of unshrunk windows in the viewport {{{
 function! s:GetViewportSize(viewport)
-  return a:viewport["h"] + a:viewport["l"] + 1
+  return a:viewport[s:dir.Bw()] + a:viewport[s:dir.Fw()] + 1
 endfunction
 "}}}
 "s:SetViewportSize(viewport, size) adjusts viewport to the desired size {{{
@@ -274,12 +296,12 @@ function! s:SetViewportSize(viewport, size)
   let resized_viewport = copy(a:viewport)
   "note: windows_to_add could be negative if we need to remove windows
   let windows_to_add = a:size - current_size
-  let resized_viewport["l"] += windows_to_add
+  let resized_viewport[s:dir.Fw()] += windows_to_add
   "if it was negative, it's possible that this direction is now < 0
   "move these excess subtractions to the other side
-  if resized_viewport["l"] < 0
-    let resized_viewport["h"] += resized_viewport["l"]
-    let resized_viewport["l"] = 0
+  if resized_viewport[s:dir.Fw()] < 0
+    let resized_viewport[s:dir.Bw()] += resized_viewport[s:dir.Fw()]
+    let resized_viewport[s:dir.Fw()] = 0
   endif
   return resized_viewport
 endfunction
@@ -294,15 +316,14 @@ function! s:GetDesiredViewport(size, direction)
   let dir = a:direction["direction"]
   "initially set viewport to show windows to the right of curwin
   if !exists("t:accordion_last_desired_viewport")
-    let desired_viewport["h"] = 0
-    let desired_viewport["l"] = a:size - 1
-  "if the last motion was up/down or a window was just deleted, use the same
-  "viewport as last time
-  elseif dir == "u" || dir == "d" || dir == "x"
+    let desired_viewport[s:dir.Bw()] = 0
+    let desired_viewport[s:dir.Fw()] = a:size - 1
+  "if a window was just deleted, use the same viewport as last time
+  elseif dir == "x"
     let desired_viewport = t:accordion_last_desired_viewport
   "if the last motion was left/right, adjust the viewport so it looks the same
   "to the user.
-  elseif dir == "h" || dir == "l"
+  elseif dir == s:dir.Fw() || dir == s:dir.Bw()
     let desired_viewport = t:accordion_last_desired_viewport
     let desired_viewport[dir] = 
       \ max([desired_viewport[dir] - a:direction["magnitude"], 0])
