@@ -111,6 +111,16 @@ function! accordion#ChangeSize(change)
   endif
 endfunction
 "}}}
+"accordion#Pause() prevent accordion from running {{{
+function! accordion#Pause()
+  let s:accordion_running = 1
+endfunction
+"}}}
+"accordion#Unpause() undo pause, allowing accordion to run {{{
+function! accordion#Unpause()
+  let s:accordion_running = 0
+endfunction
+"}}}
 "Shrinking:
 "s:WindowIsShrunk() returns true if current window is shrunk {{{
 function! s:WindowIsShrunk()
