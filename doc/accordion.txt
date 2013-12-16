@@ -1,4 +1,4 @@
-*accordion.vim* Minimize all but a few vsplits 
+*accordion.vim* Minimize all but a few splits 
 *accordion*
 
 Author: Matthew Boehm <http://github.com/mattboehm>
@@ -23,8 +23,8 @@ CONTENTS                                         *accordion-contents*
 ==============================================================================
 INTRODUCTION                                     *accordion-intro*
 
-Accordion is a window manager for people who love vsplits. Tell it the maximum
-number of vsplits you want to see and any extra vsplits will be shrunk for
+Accordion is a window manager for people who love splits. Tell it the maximum
+number of splits you want to see and any extra splits will be shrunk for
 you. As you change windows, the viewport moves with you.
 
 
@@ -90,6 +90,10 @@ If you want to always enforce a maximum number of vsplits to 4 >
   AccordionAll 4
 <
 
+If you prefer hsplits >
+  let g:accordion_mode="h"
+<
+
 Use whatever shortcuts you want. I typically prefer <leader> to <C-w>
 but chose these as they're less likely to conflict with your current mappings
 and <C-w> kinda makes sense as you are messing with windows >
@@ -109,7 +113,14 @@ and <C-w> kinda makes sense as you are messing with windows >
 ------------------------------------------------------------------------------
 OPTIONS                                          *accordion-options*
 
-accordion_listening                              *accordion_listening*
+g:accordion_mode                                 *accordion_mode*
+Values: "v", "h"
+Default: "v"
+Whether to use hsplits or vsplits. For now this is a global setting that
+applies to all tabs and it is recommended that you do not change it while
+accordion is running.
+
+g:accordion_listening                            *accordion_listening*
 Values: 0/1
 Default: 1
 If true, accordion listens for the window change event.
