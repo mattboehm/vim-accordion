@@ -304,7 +304,7 @@ function! s:GetDesiredViewport(size, direction)
   let resized_viewport = {}
   let should_redraw = 1
   let dir = a:direction["direction"]
-  let magnitude = a:direction["magnitude"]
+  let magnitude = get(a:direction, "magnitude")
   if exists("g:accordion_size_changed")
     let size_changed = 1
     let dir = "h"
