@@ -46,13 +46,13 @@ endfunction
 "}}}
 "accordion#Start(size) set global accordion size and trigger layout {{{
 function! accordion#Start(size)
-  let g:accordion_size = a:size
+  call s:SetSize(g:, a:size)
   call accordion#Accordion()
 endfunction
 "}}}
 "accordion#StartTab(size) set tab accordion size and trigger layout {{{
 function! accordion#StartTab(size)
-  let t:accordion_size = a:size
+  call s:SetSize(t:, a:size)
   call accordion#Accordion()
 endfunction
 "}}}
@@ -100,7 +100,7 @@ function! accordion#ChangeSize(change)
   "change tab variable if it exists
   if exists("t:accordion_size")
     if t:accordion_size + a:change >= 1
-      let t:accordion_size += a:change
+      call s:SetSize(t:, t:accordion_size + a:change)
       call accordion#Accordion()
     else
       echoerr "Accordion size can't be less than 1"
@@ -108,6 +108,7 @@ function! accordion#ChangeSize(change)
   "else change global if it exists
   elseif exists("g:accordion_size")
     if g:accordion_size + a:change >= 1
+      call s:SetSize(g:, g:accordion_size + a:change)
       let g:accordion_size += a:change
       call accordion#Accordion()
     else
@@ -149,6 +150,16 @@ endfunction
 "s:dir.AltBw() backwards in opposite mode {{{
 function! s:dir.AltBw() dict
   return g:accordion_mode == "v"? "k" : "h"
+"}}}
+"Helpers:
+"s:SetSize(ns, size) set global or tab size. If already set, also mark g:accordion_size_changed {{{
+"If accordion was running and the user called it again with a different size,
+"we need to re-layout.
+function! s:SetSize(ns, size)
+  if get(a:ns, "accordion_size")
+    let g:accordion_size_changed=1
+  endif
+  let a:ns["accordion_size"]=a:size
 endfunction
 "}}}
 "Shrinking:
@@ -324,6 +335,15 @@ function! s:GetDesiredViewport(size, direction)
   let resized_viewport = {}
   let should_redraw = 1
   let dir = a:direction["direction"]
+  let magnitude = a:direction["magnitude"]
+  if exists("g:accordion_size_changed")
+    let size_changed = 1
+    let dir = s:dir.Fw()
+    let magnitude = 0
+    unlet g:accordion_size_changed
+  else
+    let size_changed = 0
+  endif
   "initially set viewport to show windows to the right of curwin
   if !exists("t:accordion_last_desired_viewport")
     let desired_viewport[s:dir.Bw()] = 0
@@ -336,15 +356,15 @@ function! s:GetDesiredViewport(size, direction)
   elseif dir == s:dir.Fw() || dir == s:dir.Bw()
     let desired_viewport = t:accordion_last_desired_viewport
     let desired_viewport[dir] = 
-      \ max([desired_viewport[dir] - a:direction["magnitude"], 0])
+      \ max([desired_viewport[dir] - magnitude)
     let desired_viewport[s:opposites[dir]] = 
-      \ min([desired_viewport[s:opposites[dir]] + a:direction["magnitude"], a:size - 1])
+      \ min([desired_viewport[s:opposites[dir]] + magnitude, a:size - 1])
     "if the current window's not shrunk, there's no need to redraw
     "we skip redrawing to be more efficient and to let users resize the
     "visible splits
     "If the user's just called :vsp and added a new window, we still need to
     "redraw
-    if !s:WindowIsShrunk() && winnr("$") == get(t:, "accordion_num_windows")
+    if !s:WindowIsShrunk() && winnr("$") == get(t:, "accordion_num_windows") && !size_changed
       let should_redraw = 0
     endif
   endif
