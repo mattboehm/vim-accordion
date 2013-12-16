@@ -326,7 +326,7 @@ function! s:GetDesiredViewport(size, direction)
   elseif dir == "h" || dir == "l"
     let desired_viewport = t:accordion_last_desired_viewport
     let desired_viewport[dir] = 
-      \ max([desired_viewport[dir] - magnitude)
+      \ max([desired_viewport[dir] - magnitude, 0])
     let desired_viewport[s:opposites[dir]] = 
       \ min([desired_viewport[s:opposites[dir]] + magnitude, a:size - 1])
     "if the current window's not shrunk, there's no need to redraw
