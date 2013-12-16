@@ -150,6 +150,7 @@ endfunction
 "s:dir.AltBw() backwards in opposite mode {{{
 function! s:dir.AltBw() dict
   return g:accordion_mode == "v"? "k" : "h"
+endfunction
 "}}}
 "Helpers:
 "s:SetSize(ns, size) set global or tab size. If already set, also mark g:accordion_size_changed {{{
@@ -356,7 +357,7 @@ function! s:GetDesiredViewport(size, direction)
   elseif dir == s:dir.Fw() || dir == s:dir.Bw()
     let desired_viewport = t:accordion_last_desired_viewport
     let desired_viewport[dir] = 
-      \ max([desired_viewport[dir] - magnitude)
+      \ max([desired_viewport[dir] - magnitude, 0])
     let desired_viewport[s:opposites[dir]] = 
       \ min([desired_viewport[s:opposites[dir]] + magnitude, a:size - 1])
     "if the current window's not shrunk, there's no need to redraw
