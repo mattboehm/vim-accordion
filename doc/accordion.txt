@@ -4,24 +4,24 @@
 Author: Matthew Boehm <http://github.com/mattboehm>
 
 ==============================================================================
-CONTENTS                                         *accordion-contents*
+CONTENTS                                         *accordion_contents*
 
-  ╓ Introduction ─────────────────────────────── |accordion-intro|
+  ╓ Introduction ─────────────────────────────── |accordion_intro|
   ║                                                                           
-  ╠ Commands ─────────────────────────────────── |accordion-commands|
-  ║  ├ Starting................................. |accordion-starting|
-  ║  ├ Stopping................................. |accordion-stopping|
-  ║  ├ Zooming.................................. |accordion-zooming|
-  ║  └ Running Once............................. |accordion-running-once|
+  ╠ Commands ─────────────────────────────────── |accordion_commands|
+  ║  ├ Starting................................. |accordion_starting|
+  ║  ├ Stopping................................. |accordion_stopping|
+  ║  ├ Zooming.................................. |accordion_zooming|
+  ║  └ Running Once............................. |accordion_running_once|
   ║                                                                           
-  ╠ Configuration ────────────────────────────── |accordion-configuration|
-  ║  ├ Suggested vimrc settings................. |accordion-suggested-settings|
-  ║  └ Options.................................. |accordion-options|
+  ╠ Configuration ────────────────────────────── |accordion_configuration|
+  ║  ├ Suggested vimrc settings................. |accordion_suggested_settings|
+  ║  └ Options.................................. |accordion_options|
   ║                                                                           
-  ╙ Limitations ──────────────────────────────── |accordion-limitations|
+  ╙ Limitations ──────────────────────────────── |accordion_limitations|
 
 ==============================================================================
-INTRODUCTION                                     *accordion-intro*
+INTRODUCTION                                     *accordion_intro*
 
 Accordion is a window manager for people who love vsplits. Tell it the maximum
 number of vsplits you want to see and any extra vsplits will be shrunk for
@@ -29,10 +29,10 @@ you. As you change windows, the viewport moves with you.
 
 
 ==============================================================================
-COMMANDS                                         *accordion-commands*
+COMMANDS                                         *accordion_commands*
 
 ------------------------------------------------------------------------------
-STARTING                                         *accordion-starting*
+STARTING                                         *accordion_starting*
 
 :Accordion <size>                                *:Accordion*
     Start enforcing that the current tab is <size> vsplits wide
@@ -45,7 +45,7 @@ STARTING                                         *accordion-starting*
     are always diffed against each other.
 
 ------------------------------------------------------------------------------
-STOPPING                                         *accordion-stopping*
+STOPPING                                         *accordion_stopping*
 
 :AccordionStop                                   *:AccordionStop*
     Turn off auto-layout and reset window sizes.
@@ -53,7 +53,7 @@ STOPPING                                         *accordion-stopping*
     global rule.
 
 ------------------------------------------------------------------------------
-ZOOMING                                          *accordion-zooming*
+ZOOMING                                          *accordion_zooming*
 
 :AccordionZoomIn                                 *:AccordionZoomIn*
     Subtract 1 from maximum number of vsplits
@@ -65,26 +65,26 @@ ZOOMING                                          *accordion-zooming*
     Tries to modify tab setting. If there is none, modifies global setting
 
 ------------------------------------------------------------------------------
-RUNNING ONCE                                     *accordion-running-once*
+RUNNING ONCE                                     *accordion_running_once*
 
 :AccordionOnce <size>                            *:AccordionOnce*
     Show only <size> windows and shrink the rest.
     This does not start a layout, so if you switch windows, the viewport won't
     update.
-    To start a layout, see |accordion-running|
+    To start a layout, see |accordion_running|
     To reset your windows to normal, run |:AccordionClear|
 
 :AccordionClear                                  *:AccordionClear*
     Unlock/resize windows
     If accordion is still running, as soon as you switch windows, the layout
     will be applied again
-    If you want to stop accordion from running, see |accordion-stopping|.
+    If you want to stop accordion from running, see |accordion_stopping|.
 
 ==============================================================================
-CONFIGURATION                                    *accordion-configuration*
+CONFIGURATION                                    *accordion_configuration*
 
 ------------------------------------------------------------------------------
-SUGGESTED VIMRC SETTINGS                         *accordion-suggested-settings*
+SUGGESTED VIMRC SETTINGS                         *accordion_suggested_settings*
 
 If you want to always enforce a maximum number of vsplits to 4 >
   AccordionAll 4
@@ -107,18 +107,18 @@ and <C-w> kinda makes sense as you are messing with windows >
 
 
 ------------------------------------------------------------------------------
-OPTIONS                                          *accordion-options*
+OPTIONS                                          *accordion_options*
 
 accordion_listening                              *accordion_listening*
 Values: 0/1
 Default: 1
 If true, accordion listens for the window change event.
-This must be 1 to use any of the commands in |accordion-starting|.
+This must be 1 to use any of the commands in |accordion_starting|.
 You can set this to 0 if you're only planning to use the commands in
-|accordion-running-once| or do not plan on using accordion at all.
+|accordion_running_once| or do not plan on using accordion at all.
 
 ==============================================================================
-LIMITATIONS                                      *accordion-limitations*
+LIMITATIONS                                      *accordion_limitations*
 
 1. |AccordionStop| only calls |AccordionClear| on the current tab even if
     there are other tabs that were locked

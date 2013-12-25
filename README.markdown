@@ -7,7 +7,7 @@ Accordion lets you set the maximum number of vsplits you want to see, and shrink
 
 If you want to view changes to a file over time, it's got a fancy diff mode. Even if you're not big on vsplits, you may want to consider Accordion for this feature alone.
 
-Version 0.5.3
+Version 0.5.4
 
 But I Don't Use Splits!
 -----------------------
@@ -32,7 +32,7 @@ Accordion will shrink all but two vsplits, and visible vsplits will be diffed ag
 The easiest way to open versions of a file is to run [fugitive](https://github.com/tpope/vim-fugitive)'s `:Glog --reverse`, highlight the desired changes in the quickfix list, and hit the [unstack](https://github.com/mattboehm/vim-unstack) shortcut.
 See the [screenshots](#Screenshots) below for an example of diff mode in action.
 
-There are also commands to temporarily change the layout without starting/stopping. To learn more about these, type `:help accordion-running-once`.
+There are also commands to temporarily change the layout without starting/stopping. To learn more about these, type `:help accordion_running_once`.
 
 Screenshots
 -----------
