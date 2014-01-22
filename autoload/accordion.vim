@@ -17,16 +17,8 @@
 function! accordion#Accordion(...)
   let curwin = winnr()
   let prevwin = winnr("#")
-  let size = 0
-  if a:0 == 0
-    if exists("t:accordion_size")
-      let size = t:accordion_size
-    elseif exists("g:accordion_size")
-      let size = g:accordion_size
-    endif
-  else
-    let size = a:1
-  endif
+  "if there's an argument, set size to that. Else, use global/tab size
+  let size = (a:0 == 1)? (a:1) : (s:GetSize())
   "accordion can be triggered on the change of window focus
   "this is a hack so accordion doesn't recursively trigger itself
   if !s:accordion_running && size > 0
@@ -157,12 +149,24 @@ endfunction
 "If accordion was running and the user called it again with a different size,
 "we need to re-layout.
 function! s:SetSize(ns, size)
-  if get(a:ns, "accordion_size")
+  let old_size = s:GetSize()
+  if old_size && old_size != a:size
     let g:accordion_size_changed=1
   endif
   let a:ns["accordion_size"]=a:size
 endfunction
 "}}}
+"s:GetSize() get global or tab size or return 0.{{{
+function! s:GetSize()
+  if exists("t:accordion_size")
+    return t:accordion_size
+  elseif exists("g:accordion_size")
+    return g:accordion_size
+  else
+    return 0
+  endif
+endfunction
+" }}}
 "Shrinking:
 "s:WindowIsShrunk() returns true if current window is shrunk {{{
 function! s:WindowIsShrunk()
