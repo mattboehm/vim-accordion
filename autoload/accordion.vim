@@ -231,7 +231,7 @@ function! s:GetMovementDirection()
   "we know that if the buffer number has increased since the last move,
   "the direction must be down or right
   if newwin == prevwin
-    return {"direction": "x"}
+    return {"direction": "x", "magnitude": 0}
   elseif newwin < prevwin
     let possible_directions = [s:dir.Bw(), s:dir.AltBw()]
   else "newwin > prevwin
@@ -239,7 +239,7 @@ function! s:GetMovementDirection()
   endif
   "go to previous window
   execute prevwin "wincmd w"
-  let result = {"direction": "?"}
+  let result = {"direction": "?", "magnitude": 0}
   "try moving in all 4 directions and see if you end up in the new window
   for direction in possible_directions
     let num_movements = s:GetNumMovementsInDirection(newwin, direction)
