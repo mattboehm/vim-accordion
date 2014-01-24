@@ -165,6 +165,17 @@ endfunction
 "s:UnshrinkWindow() reset a window to normal {{{
 function! s:UnshrinkWindow()
   setl nowinfixwidth
+  "If the window is too narrow, make the window as wide as possible.
+  "This is needed to fix issue #34. When doing :Accordion 1 and moving from
+  "window 2 to window 1, the first window is unshrunk but retains a width of 1
+  "Accordion then goes and shrinks all the other windows, but when it tries to
+  "set the last one to a width of 0, vim makes the second to last window wider
+  "despite it having a fixed width instead of widening the first window. It
+  "seems like vim gives up before it reaches the first window and instead
+  "decides to ignore the winfixwidth option.
+  if winwidth(0) < 2
+    wincmd |
+  endif
   "if in diff mode, diff unshrunk windows,
   "but not if UnshrinkWindow was called by AccordionClear()
   if exists("t:accordion_diff") && !s:accordion_clearing
