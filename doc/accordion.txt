@@ -137,4 +137,4 @@ LIMITATIONS                                      *accordion-limitations*
     splits in general may cause slightly unexpected behaviors. Please open an 
     issue on github if any behavior surprises you.
 
- vim:tw=78:et:ft=help:norl:fenc=utf8
+ vim:tw=78:et:ft=help:norl
