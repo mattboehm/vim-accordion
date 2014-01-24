@@ -34,7 +34,7 @@ Accordion will shrink all but two splits, and visible splits will be diffed agai
 The easiest way to open versions of a file is to run [fugitive](https://github.com/tpope/vim-fugitive)'s `:Glog --reverse`, highlight the desired changes in the quickfix list, and hit the [unstack](https://github.com/mattboehm/vim-unstack) shortcut.
 See the [screenshots](#Screenshots) below for an example of diff mode in action.
 
-There are also commands to temporarily change the layout without starting/stopping. To learn more about these, type `:help accordion-running-once`.
+There are also commands to temporarily change the layout without starting/stopping. To learn more about these, type `:help accordion_running_once`.
 
 Screenshots
 -----------

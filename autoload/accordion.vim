@@ -198,8 +198,18 @@ endfunction
 function! s:UnshrinkWindow()
   if g:accordion_mode == "v"
     setl nowinfixwidth
+    "If the window is too narrow, make the window as wide as possible.
+    "This is needed to fix issue #34. When doing :Accordion 1 and moving from
+    "window 2 to window 1, the first window is unshrunk but retains a width of 1
+    "Accordion then goes and shrinks all the other windows, but when it tries to
+    "set the last one to a width of 0, vim makes the second to last window wider
+    "despite it having a fixed width instead of widening the first window. It
+    "seems like vim gives up before it reaches the first window and instead
+    "decides to ignore the winfixwidth option.
+    wincmd |
   else
     setl nowinfixheight
+    wincmd _
   endif
   "if in diff mode, diff unshrunk windows,
   "but not if UnshrinkWindow was called by AccordionClear()
@@ -340,7 +350,7 @@ function! s:GetDesiredViewport(size, direction)
   let resized_viewport = {}
   let should_redraw = 1
   let dir = a:direction["direction"]
-  let magnitude = a:direction["magnitude"]
+  let magnitude = get(a:direction, "magnitude")
   if exists("g:accordion_size_changed")
     let size_changed = 1
     let dir = s:dir.Fw()
