@@ -436,6 +436,9 @@ function! s:SetViewport(desired_viewport)
   for [direction, padding] in items(adjusted_viewport)
     call s:SetViewportInDirection(direction, padding)
   endfor
+  "We need to maximize the width/height of this window again to ensure that
+  "all shrunk windows have a width of 0 (fix for #37)
+  call s:UnshrinkWindow()
   wincmd =
   call s:RestoreVisibleWindowViews()
   let &lazyredraw = oldlazyredraw

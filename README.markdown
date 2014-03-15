@@ -7,7 +7,7 @@ Accordion lets you set the maximum number of splits you want to see, and shrinks
 
 If you want to view changes to a file over time, it's got a fancy diff mode. Even if you're not big on splits, you may want to consider Accordion for this feature alone.
 
-Version 0.6.0
+Version 0.6.1
 
 But I Don't Use Splits!
 -----------------------
