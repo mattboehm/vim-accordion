@@ -18,13 +18,17 @@ If you don't typically use a lot of splits, there are a few other use cases wher
 
 If you're not interested in any of these use cases then no worries; keep using vim in whatever way works best for you =).
 
+Horizontal Splits
+-----------------
+By default, accordion only collapses vertical splits if you want Accordion to only collapse horizontal splits instead, add the following to your .vimrc:
+
+    let g:accordion_mode="h"
+    
 Usage
 -----
 For a much more detailed guide, please type `:help accordion` or read [doc/accordion.txt](doc/accordion.txt).
 
 To enforce that the current tab always shows at most 3 splits, run `:Accordion 3`. Accordion will give you a viewport of 3 splits and shrink all splits outside the viewport. As you bump against the edges of the viewport, it will move with you. You can stop Accordion by running `:AccordionStop`
-
-Prefer hsplits? Add `let g:accordion_mode="h"` to make accordion limit hsplits instead of vsplits.
 
 While Accordion is running, use `:AccordionZoomIn` and `AccordionZoomOut` to change the size of the viewport.
 
